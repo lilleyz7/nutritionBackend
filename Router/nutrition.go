@@ -47,6 +47,23 @@ func GetAllFacts(c *fiber.Ctx) error {
 	})
 }
 
+func CheckFacts(c *fiber.Ctx) error {
+	food := c.Params("food")
+
+	url := fmt.Sprintf("https://nutrition-by-api-ninjas.p.rapidapi.com/v1/nutrition?query=%s", food)
+
+	if food == "" {
+		return c.Status(400).JSON(fiber.Map{
+			"error": "food required",
+		})
+	}
+	facts := foodninja.GetNutritionFacts(url)
+
+	return c.Status(200).JSON(fiber.Map{
+		"data": facts,
+	})
+
+}
 func AddFood(c *fiber.Ctx) error {
 	food := c.Params("food")
 	username := c.Params("username")
